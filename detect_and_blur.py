@@ -116,7 +116,7 @@ def detect(save_img=False):
                     # Rescale boxes from img_size to im0 size
                     if pano is not None:
                         det[:, :4] = scale_coords(img.shape[2:], det[:, :4], pano_dims).round()
-                        det[:, :4] += torch.Tensor([img_idx * pano_dims[0], pano_dims[1] // 2, img_idx * pano_dims[0], pano_dims[1] // 2])
+                        det[:, :4] += torch.Tensor([img_idx * pano_dims[0], pano_dims[1] // 2, img_idx * pano_dims[0], pano_dims[1] // 2]).to(device)
                     else:
                         det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
 
