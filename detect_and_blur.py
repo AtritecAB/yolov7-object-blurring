@@ -73,6 +73,7 @@ def detect(save_img=False):
 
     t0 = time.time()
     for path, imgs, im0s, vid_cap in dataset:
+        has_detections = False
         for img_idx, img in enumerate(imgs):
             img = torch.from_numpy(img).to(device)
             img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -113,6 +114,7 @@ def detect(save_img=False):
                 txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
                 if len(det):
+                    has_detections = True
                     # Rescale boxes from img_size to im0 size
                     if pano is not None:
                         det[:, :4] = scale_coords(img.shape[2:], det[:, :4], pano_dims).round()
@@ -157,8 +159,11 @@ def detect(save_img=False):
         # Save results (image with detections)
         if save_img:
             if dataset.mode == 'image':
-                cv2.imwrite(save_path, im0)
-                print(f" The image with the result is saved in: {save_path}")
+                if has_detections:
+                    cv2.imwrite(save_path, im0)
+                    print(f" The image with the result is saved in: {save_path}")
+                else:
+                    print("The no detections in image, image will not be saved.")
             else:  # 'video' or 'stream'
                 if vid_path != save_path:  # new video
                     vid_path = save_path
