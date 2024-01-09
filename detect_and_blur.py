@@ -14,6 +14,7 @@ from utils.general import check_img_size, check_requirements, check_imshow, non_
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
 from utils.plots import plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
+from utils.exif import transfer_xmp
 
 
 def detect(save_img=False):
@@ -161,6 +162,7 @@ def detect(save_img=False):
             if dataset.mode == 'image':
                 if has_detections:
                     cv2.imwrite(save_path, im0)
+                    transfer_xmp(path, save_path)
                     print(f" The image with the result is saved in: {save_path}")
                 else:
                     print("The no detections in image, image will not be saved.")
